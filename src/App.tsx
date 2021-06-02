@@ -11,6 +11,7 @@ function App() {
   const loading = useRef<boolean>(true);
   const [currentContacts,setCurrentContacts] = useState<IContact[]>([])
   const selectedContacts = useRef<number[]>([]);
+  const [searchValue, setSearchValue] = useState<string>("");
 
 
   useEffect(()=>{
@@ -31,7 +32,7 @@ function App() {
 
     <div className="App flex flex-col items-center justify-center w-full">
      <span className=" bg-blue-300 py-3 w-full text-center text-white text-2xl uppercase font-bold"> Contacts</span>
-     <SearchBar />
+     <SearchBar searchValue={searchValue} setSearchValue={setSearchValue}/>
      <ContactsList />
     </div>
     </MyContext.Provider>

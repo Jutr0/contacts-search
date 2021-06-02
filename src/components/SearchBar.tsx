@@ -1,21 +1,23 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { MyContext } from "../utils/MyContext";
 
-const SearchBar = ()=>{
+const SearchBar = ({searchValue, setSearchValue}:{searchValue:string,setSearchValue:(newState:string)=>void})=>{
 
-    const [searchValue, setSearchValue] = useState<string>("");
     const {contacts,setCurrentContacts} = useContext(MyContext);
+    const cVal = useRef("");
 
-    const handleChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
-        setSearchValue(e.target.value);
+    const handleChange=(val:string)=>{
+        setSearchValue(val);
+        cVal.current = val;
     }
 
     const handleSubmit = ()=>{
-        if(searchValue.trim()!==""){
+        
+        if(cVal.current.trim()!==""){
         let tempContacts:number[] = [];
         for(const contact of contacts){
             
-            if((contact.first_name+" "+contact.last_name).toLowerCase().indexOf(searchValue.toLowerCase())>-1){
+            if((contact.first_name+" "+contact.last_name).toLowerCase().indexOf(cVal.current.toLowerCase())>-1){
                 tempContacts.push(contacts.indexOf(contact));
             }
         }
@@ -27,19 +29,20 @@ const SearchBar = ()=>{
     }
 
     return (
-        <form
+        <form 
         onSubmit={e=>{
             e.preventDefault();
             handleSubmit()}}
             style={{width:"90%"}}
         >
-            <input className="w-full px-5 py-3 border-gray-400 border-2" 
-            value={searchValue}   
-            onChange={(e)=>{handleChange(e)}}
-            onBlur={e=>handleChange(e)}
+            <input
+                className="w-full px-5 py-3 border-gray-400 border-2" 
+                value={searchValue}   
+                onInput={(e)=>{handleChange(e.currentTarget.value);handleSubmit()}}
+                onBlur={e=>handleChange(e.currentTarget.value)}
 
-            type="text"
-            placeholder="Find contacts" />
+                type="text"
+                placeholder="Find contacts" />
         </form>
     )
 }
